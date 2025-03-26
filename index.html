@@ -11,7 +11,7 @@
       padding: 20px;
     }
     .chat-container {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
       background: #fff;
       border-radius: 10px;
@@ -25,69 +25,45 @@
       margin: 10px 0;
       border-radius: 15px;
       max-width: 80%;
-      transition: all 0.3s ease;
-    }
-    .user {
-      background: #d1e7dd;
-      align-self: flex-end;
-      text-align: right;
-      margin-left: auto;
     }
     .agent {
       background: #e2e3e5;
       align-self: flex-start;
-      margin-right: auto;
     }
-    .button-area {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .recruiter {
+      background: #d1e7dd;
+      align-self: flex-end;
+      text-align: right;
     }
-    button.option {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      background-color: #0d6efd;
-      color: white;
-      cursor: pointer;
+    a {
+      color: #0d6efd;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <div class="chat-container" id="chat">
-    <div class="chat-bubble user">Moi! Haluaisin hakea AI Technology Champion ja Practice Champion -rooleihin.</div>
-    <div class="chat-bubble agent" id="agent-question">Tervetuloa, Juho-Matias! Mikä seuraavista kuvaa parhaiten motivaatiotasi?</div>
+  <div class="chat-container">
+    <div class="chat-bubble recruiter">Kuka tämä Juho-Matias Roitto oikein on? Miksi hänen pitäisi olla AI Champion?</div>
+    <div class="chat-bubble agent">Juho-Matias on kokenut data- ja analytiikka-asiantuntija, jolla on yli 10 vuoden kokemus finanssialalta. Hän on toiminut BI-johtajana, projektipäällikkönä ja kehittäjänä.</div>
+
+    <div class="chat-bubble recruiter">Kerro hänen teknisestä osaamisestaan.</div>
+    <div class="chat-bubble agent">Hän hallitsee mm. SQL:n, Azure-pilvipalvelut, ETL-työkalut sekä Power BI:n. Hän on rakentanut useita tietovarasto- ja raportointiratkaisuja alusta asti.</div>
+
+    <div class="chat-bubble recruiter">Entä AI-kokemus? Onko hän oikeasti tehnyt mitään AI:n kanssa?</div>
+    <div class="chat-bubble agent">Hänellä on vahva pohja: data-arkkitehtuuri, migraatiot ja liiketoimintalähtöinen ajattelu. Hän on aloittanut siirtymän Gen AI -asiantuntijaksi ja ymmärtää, miten agentteja rakennetaan ja konfiguroidaan esim. Copilotin avulla.</div>
+
+    <div class="chat-bubble recruiter">Voiko hän oikeasti johtaa AI-projektia?</div>
+    <div class="chat-bubble agent">Kyllä. Hän on johtanut monia dataintensiivisiä hankkeita, kuten Guidewire-ydinjärjestelmän BI-integraatiota ja vakuutusdatan tutkintahankkeita. Hän osaa viedä asiat suunnittelusta toteutukseen.</div>
+
+    <div class="chat-bubble recruiter">Onko esimerkkiä käytännön AI-agentista?</div>
+    <div class="chat-bubble agent">Kuvitellaan: asiantuntija tarvitsee automaattisen yhteenvedon projektista Power BI -raporttiin. Juho-Matias rakentaa agentin, joka tiivistää datan, ehdottaa toimenpiteitä ja luo version esitettäväksi johdolle.</div>
+
+    <div class="chat-bubble recruiter">Hyvä on. Onko hänestä jotain lisämateriaalia?</div>
+    <div class="chat-bubble agent">
+      Kyllä, tässä hänen LinkedIn-profiilinsa: 
+      <a href="https://www.linkedin.com/in/juho-matias-roitto" target="_blank">linkedin.com/in/juho-matias-roitto</a><br>
+      Ja CV on saatavilla pyynnöstä. Hän painaa Enteriä ennen kuin muut ehtivät avata prompt-editorin.
+    </div>
   </div>
-  <div class="button-area">
-    <button class="option" onclick="chooseOption('Haluan viedä tekoälyn käytäntöön arjessa.')">Viedä tekoäly arkeen</button>
-    <button class="option" onclick="chooseOption('Kehittää teknistä osaamistani AI:n parissa.')">Kehittää teknistä osaamista</button>
-    <button class="option" onclick="chooseOption('Luoda vaikuttavia ratkaisuja liiketoiminnalle.')">Ratkaista liiketoimintahaasteita</button>
-  </div>
-
-  <script>
-    const chat = document.getElementById('chat');
-
-    function chooseOption(text) {
-      const userBubble = document.createElement('div');
-      userBubble.className = 'chat-bubble user';
-      userBubble.textContent = text;
-      chat.appendChild(userBubble);
-
-      const agentBubble = document.createElement('div');
-      agentBubble.className = 'chat-bubble agent';
-      agentBubble.textContent = generateReply(text);
-      chat.appendChild(agentBubble);
-
-      document.querySelector('.button-area').remove();
-    }
-
-    function generateReply(choice) {
-      if (choice.includes('tekoälyn käytäntöön')) return 'Loistavaa! Käytännönläheinen ote on juuri sitä, mitä AI-rooleissa tarvitaan.';
-      if (choice.includes('teknistä osaamistani')) return 'Erinomaista – tekninen uteliaisuus ja halu oppia ovat avainasemassa.';
-      if (choice.includes('vaikuttavia ratkaisuja')) return 'Juuri näin – AI:n tarkoitus on tuottaa konkreettista arvoa liiketoiminnalle.';
-      return 'Kiitos vastauksestasi!';
-    }
-  </script>
 </body>
 </html>
