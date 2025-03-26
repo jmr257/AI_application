@@ -17,12 +17,15 @@
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       padding: 20px;
+      display: flex;
+      flex-direction: column;
     }
     .chat-bubble {
       padding: 10px 15px;
       margin: 10px 0;
       border-radius: 15px;
       max-width: 80%;
+      transition: all 0.3s ease;
     }
     .user {
       background: #d1e7dd;
@@ -35,19 +38,67 @@
       align-self: flex-start;
       margin-right: auto;
     }
+    .input-area {
+      display: flex;
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-left: 10px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #198754;
+      color: white;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="chat-container">
+  <div class="chat-container" id="chat">
     <div class="chat-bubble user">Moi! Haluaisin hakea AI Technology Champion ja Practice Champion -rooleihin.</div>
     <div class="chat-bubble agent">Tervetuloa, Juho-Matias! Kerro ensin, miksi nämä roolit kiinnostavat sinua?</div>
-    <div class="chat-bubble user">Olen rakentanut data-alustoja ja BI-ratkaisuja yli 10 vuotta. Nyt haluan siirtää osaamiseni tekoälyn maailmaan – erityisesti käytännön sovelluksiin ja agenttien kehittämiseen.</div>
-    <div class="chat-bubble agent">Kuulostaa lupaavalta! Entä tekninen taustasi – pärjäätkö prompttien, datan ja konfiguroinnin kanssa?</div>
-    <div class="chat-bubble user">SQL, Azure, Power BI, ETL – check. Rakennan vaikka alusta asti. Ymmärrän, mitä agentti tarvitsee toimiakseen liiketoiminnan kontekstissa.</div>
-    <div class="chat-bubble agent">Ja liiketoimintaymmärrys? Onko sinulla kokemusta käytännön tarpeiden määrittelystä?</div>
-    <div class="chat-bubble user">Olen toiminut datapartnerina, BI-johtajana ja projektipäällikkönä vakuutus- ja pankkisektorilla. Osaan tulkata bisnestarpeet tekoälykielelle.</div>
-    <div class="chat-bubble agent">Impressive. Viimeinen kysymys: oletko valmis viemään Sofigaten AI-agentit testilaboratoriosta tuotantoon?</div>
-    <div class="chat-bubble user">Valmiimpi kuin koskaan. Ja kyllä – painan Enteriä, kun muut vielä kirjoittavat prompttia.</div>
   </div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Kirjoita vastauksesi...">
+    <button onclick="sendMessage()">Lähetä</button>
+  </div>
+  <script>
+    const chat = document.getElementById('chat');
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (text === '') return;
+
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble user';
+      userBubble.textContent = text;
+      chat.appendChild(userBubble);
+
+      setTimeout(() => {
+        const agentBubble = document.createElement('div');
+        agentBubble.className = 'chat-bubble agent';
+        agentBubble.textContent = generateReply(text);
+        chat.appendChild(agentBubble);
+      }, 600);
+
+      input.value = '';
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function generateReply(userText) {
+      const lower = userText.toLowerCase();
+      if (lower.includes('kokemus')) return 'Minulla on yli 10 vuoden kokemus BI- ja datahankkeista.';
+      if (lower.includes('miksi')) return 'Haluan tuoda tekoälyn käytännön hyötyjä liiketoimintaan.';
+      if (lower.includes('vahvuus')) return 'Ymmärrän sekä datan että liiketoiminnan – ja puhun molempia kieliä.';
+      return 'Kiitos vastauksestasi! Voit kertoa lisää tai kysyä jotain.';
+    }
+  </script>
 </body>
 </html>
