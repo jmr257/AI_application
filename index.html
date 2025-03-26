@@ -38,22 +38,17 @@
       align-self: flex-start;
       margin-right: auto;
     }
-    .input-area {
-      display: flex;
+    .button-area {
       margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    input[type="text"] {
-      flex: 1;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-left: 10px;
+    button.option {
       padding: 10px 15px;
       border: none;
       border-radius: 5px;
-      background-color: #198754;
+      background-color: #0d6efd;
       color: white;
       cursor: pointer;
     }
@@ -62,42 +57,36 @@
 <body>
   <div class="chat-container" id="chat">
     <div class="chat-bubble user">Moi! Haluaisin hakea AI Technology Champion ja Practice Champion -rooleihin.</div>
-    <div class="chat-bubble agent">Tervetuloa, Juho-Matias! Kerro ensin, miksi nämä roolit kiinnostavat sinua?</div>
+    <div class="chat-bubble agent" id="agent-question">Tervetuloa, Juho-Matias! Mikä seuraavista kuvaa parhaiten motivaatiotasi?</div>
   </div>
-  <div class="input-area">
-    <input type="text" id="userInput" placeholder="Kirjoita vastauksesi...">
-    <button onclick="sendMessage()">Lähetä</button>
+  <div class="button-area">
+    <button class="option" onclick="chooseOption('Haluan viedä tekoälyn käytäntöön arjessa.')">Viedä tekoäly arkeen</button>
+    <button class="option" onclick="chooseOption('Kehittää teknistä osaamistani AI:n parissa.')">Kehittää teknistä osaamista</button>
+    <button class="option" onclick="chooseOption('Luoda vaikuttavia ratkaisuja liiketoiminnalle.')">Ratkaista liiketoimintahaasteita</button>
   </div>
+
   <script>
     const chat = document.getElementById('chat');
 
-    function sendMessage() {
-      const input = document.getElementById('userInput');
-      const text = input.value.trim();
-      if (text === '') return;
-
+    function chooseOption(text) {
       const userBubble = document.createElement('div');
       userBubble.className = 'chat-bubble user';
       userBubble.textContent = text;
       chat.appendChild(userBubble);
 
-      setTimeout(() => {
-        const agentBubble = document.createElement('div');
-        agentBubble.className = 'chat-bubble agent';
-        agentBubble.textContent = generateReply(text);
-        chat.appendChild(agentBubble);
-      }, 600);
+      const agentBubble = document.createElement('div');
+      agentBubble.className = 'chat-bubble agent';
+      agentBubble.textContent = generateReply(text);
+      chat.appendChild(agentBubble);
 
-      input.value = '';
-      chat.scrollTop = chat.scrollHeight;
+      document.querySelector('.button-area').remove();
     }
 
-    function generateReply(userText) {
-      const lower = userText.toLowerCase();
-      if (lower.includes('kokemus')) return 'Minulla on yli 10 vuoden kokemus BI- ja datahankkeista.';
-      if (lower.includes('miksi')) return 'Haluan tuoda tekoälyn käytännön hyötyjä liiketoimintaan.';
-      if (lower.includes('vahvuus')) return 'Ymmärrän sekä datan että liiketoiminnan – ja puhun molempia kieliä.';
-      return 'Kiitos vastauksestasi! Voit kertoa lisää tai kysyä jotain.';
+    function generateReply(choice) {
+      if (choice.includes('tekoälyn käytäntöön')) return 'Loistavaa! Käytännönläheinen ote on juuri sitä, mitä AI-rooleissa tarvitaan.';
+      if (choice.includes('teknistä osaamistani')) return 'Erinomaista – tekninen uteliaisuus ja halu oppia ovat avainasemassa.';
+      if (choice.includes('vaikuttavia ratkaisuja')) return 'Juuri näin – AI:n tarkoitus on tuottaa konkreettista arvoa liiketoiminnalle.';
+      return 'Kiitos vastauksestasi!';
     }
   </script>
 </body>
