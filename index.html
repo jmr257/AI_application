@@ -39,10 +39,27 @@
       color: #0d6efd;
       text-decoration: none;
     }
+    .button-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #0d6efd;
+      color: white;
+    }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <div class="chat-container">
+  <div class="chat-container" id="chat">
     <div class="chat-bubble recruiter">Kuka tämä Juho-Matias Roitto oikein on? Miksi hänen pitäisi olla AI Champion?</div>
     <div class="chat-bubble agent">Juho-Matias on kokenut data- ja analytiikka-asiantuntija, jolla on yli 10 vuoden kokemus finanssialalta. Hän on toiminut BI-johtajana, projektipäällikkönä ja kehittäjänä.</div>
 
@@ -64,6 +81,41 @@
       <a href="https://www.linkedin.com/in/juho-matias-roitto" target="_blank">linkedin.com/in/juho-matias-roitto</a><br>
       Ja CV on saatavilla pyynnöstä. Hän painaa Enteriä ennen kuin muut ehtivät avata prompt-editorin.
     </div>
+
+    <div class="chat-bubble recruiter">Haluatko Juho-Matiaksen kumpaan rooliin?</div>
+    <div class="button-container">
+      <button onclick="showEmail('tech')">AI Technology Champion</button>
+      <button onclick="showEmail('practice')">Practice Champion</button>
+    </div>
+
+    <div id="email-tech" class="chat-bubble agent hidden">
+      Erinomainen valinta. Tässä valmis sähköposti:<br>
+      <a href="mailto:juhomatias.roitto@gmail.com?subject=Haastattelukutsu%20%E2%80%93%20AI%20Technology%20Champion&body=Hei%20Juho-Matias%2C%0AHaluaisimme%20keskustella%20kanssasi%20AI%20Technology%20Champion%20-roolista%20Sofigaten%20AI%20Agent%20-projektissa.%0AVoisitko%20ehdottaa%20sopivaa%20ajankohtaa%20haastattelulle%3F%0A%0AYst%C3%A4v%C3%A4llisin%20terveisin%2C%0A%5BRekrytoijan%20nimi%5D">Lähetä sähköposti</a>
+    </div>
+
+    <div id="email-practice" class="chat-bubble agent hidden">
+      Hienoa! Tässä sähköposti Practice-rooliin:<br>
+      <a href="mailto:juhomatias.roitto@gmail.com?subject=Haastattelukutsu%20%E2%80%93%20Practice%20Champion&body=Hei%20Juho-Matias%2C%0AOlemme%20kiinnostuneita%20keskustelemaan%20kanssasi%20Practice%20Champion%20-roolista%20Sofigaten%20AI%20Agent%20-projektissa.%0AVoisitko%20ehdottaa%20sopivaa%20ajankohtaa%20haastattelulle%3F%0A%0AYst%C3%A4v%C3%A4llisin%20terveisin%2C%0A%5BRekrytoijan%20nimi%5D">Lähetä sähköposti</a>
+    </div>
+
+    <div class="chat-bubble agent">Ja vielä yksi kysymys ennen kuin suljet tämän sivun: mitä luulet – käytettiinkö tämän hakemuksen rakentamiseen tekoälyä?</div>
+    <div class="button-container">
+      <button onclick="alert('Totta kai käytettiin. Mitä luulit – että ihmiset osaisivat kirjoittaa näin sujuvaa dialogia yksin? 😄')">Ehdottomasti!</button>
+      <button onclick="alert('Tekoälyä käytettiin – ja juuri oikealla tavalla.')">Jos käytettiin, niin fiksusti.</button>
+      <button onclick="alert('No kyllä käytettiin, mutta vain ihan vähän... tai ehkä vähän enemmän.')">Ei kai sentään...</button>
+    </div>
   </div>
+
+  <script>
+    function showEmail(role) {
+      document.getElementById('email-tech').classList.add('hidden');
+      document.getElementById('email-practice').classList.add('hidden');
+      if (role === 'tech') {
+        document.getElementById('email-tech').classList.remove('hidden');
+      } else {
+        document.getElementById('email-practice').classList.remove('hidden');
+      }
+    }
+  </script>
 </body>
 </html>
