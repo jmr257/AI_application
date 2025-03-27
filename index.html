@@ -63,9 +63,9 @@
   <div class="chat-container" id="chat">
     <div class="chat-bubble recruiter">Kuka tämä Juho-Matias Roitto oikein on? Miksi hänen pitäisi olla AI Champion?</div>
     <div class="options" id="options">
-      <button class="option-button" onclick="showResponse(1)">Kerro hänen teknisestä osaamisestaan</button>
-      <button class="option-button" onclick="showResponse(2)">Kerro liiketoimintaymmärryksestä</button>
-      <button class="option-button" onclick="showResponse(3)">Kerro AI-osaamisesta</button>
+      <button class="option-button" onclick="showResponse(1, this.innerText)">Kerro hänen teknisestä osaamisestaan</button>
+      <button class="option-button" onclick="showResponse(2, this.innerText)">Kerro liiketoimintaymmärryksestä</button>
+      <button class="option-button" onclick="showResponse(3, this.innerText)">Kerro AI-osaamisesta</button>
     </div>
   </div>
 
@@ -128,13 +128,21 @@
       }
     };
 
-    function showResponse(id) {
-      const res = responses[id];
-      const bubble = document.createElement("div");
-      bubble.className = "chat-bubble agent";
-      bubble.innerHTML = res.reply;
-      chat.insertBefore(bubble, options);
+    function showResponse(id, userText) {
+      // Rekrytoijan valinta näkyviin
+      const userBubble = document.createElement("div");
+      userBubble.className = "chat-bubble recruiter";
+      userBubble.textContent = userText;
+      chat.insertBefore(userBubble, options);
 
+      // Agentin vastaus
+      const res = responses[id];
+      const agentBubble = document.createElement("div");
+      agentBubble.className = "chat-bubble agent";
+      agentBubble.innerHTML = res.reply;
+      chat.insertBefore(agentBubble, options);
+
+      // Uudet valinnat
       options.innerHTML = "";
       res.next.forEach(opt => {
         const btn = document.createElement("button");
@@ -143,7 +151,7 @@
         if (opt.link) {
           btn.onclick = () => window.location.href = opt.value;
         } else {
-          btn.onclick = () => showResponse(opt.value);
+          btn.onclick = () => showResponse(opt.value, opt.text);
         }
         options.appendChild(btn);
       });
