@@ -53,6 +53,14 @@
     .option-button:hover {
       background-color: #0b5ed7;
     }
+    .teams-message {
+      background: #fff3cd;
+      border-left: 5px solid #ffecb5;
+      padding: 10px 15px;
+      margin: 10px 0;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
     a {
       color: #0d6efd;
       text-decoration: none;
@@ -63,9 +71,9 @@
   <div class="chat-container" id="chat">
     <div class="chat-bubble recruiter">Kuka tämä Juho-Matias Roitto oikein on? Miksi hänen pitäisi olla AI Champion?</div>
     <div class="options" id="options">
-      <button class="option-button" onclick="showResponse(1, this.innerText)">Kerro hänen teknisestä osaamisestaan</button>
-      <button class="option-button" onclick="showResponse(2, this.innerText)">Kerro liiketoimintaymmärryksestä</button>
-      <button class="option-button" onclick="showResponse(3, this.innerText)">Kerro AI-osaamisesta</button>
+      <button class="option-button" onclick="next('1', this.innerText)">Kerro hänen teknisestä osaamisestaan</button>
+      <button class="option-button" onclick="next('2', this.innerText)">Kerro liiketoimintaymmärryksestä</button>
+      <button class="option-button" onclick="next('3', this.innerText)">Kerro AI-osaamisesta</button>
     </div>
   </div>
 
@@ -73,86 +81,120 @@
     const chat = document.getElementById("chat");
     const options = document.getElementById("options");
 
+    let seen6a = false, seen6b = false;
+
     const responses = {
       1: {
         reply: "Hän hallitsee mm. SQL:n, Azure-pilvipalvelut, ETL-työkalut sekä Power BI:n. Hän on rakentanut useita tietovarasto- ja raportointiratkaisuja alusta asti.",
         next: [
-          { text: "Onko hänellä AI-kokemusta?", value: 4 },
-          { text: "Voiko hän johtaa AI-projektia?", value: 5 }
+          { text: "Onko hänellä AI-kokemusta?", value: "4" },
+          { text: "Voiko hän johtaa AI-projektia?", value: "5" }
         ]
       },
       2: {
         reply: "Hän on toiminut mm. BI-johtajana, data partnerina ja kehityspäällikkönä. Hän ymmärtää, miten data muuntuu liiketoiminnan arvoksi.",
         next: [
-          { text: "Onko hänellä AI-kokemusta?", value: 4 },
-          { text: "Voiko hän johtaa AI-projektia?", value: 5 }
+          { text: "Onko hänellä AI-kokemusta?", value: "4" },
+          { text: "Voiko hän johtaa AI-projektia?", value: "5" }
         ]
       },
       3: {
         reply: "Hän on aloittanut siirtymän Gen AI -asiantuntijaksi ja ymmärtää, miten agentteja rakennetaan ja konfiguroidaan esimerkiksi Copilotin avulla.",
         next: [
-          { text: "Onko hänellä käytännön esimerkkiä agentista?", value: 6 },
-          { text: "Voiko hän johtaa AI-projektia?", value: 5 }
+          { text: "Onko hänellä käytännön esimerkkiä agentista?", value: "6" }
         ]
       },
       4: {
         reply: "Hänellä on vahva pohja: data-arkkitehtuuri, migraatiot ja liiketoimintalähtöinen ajattelu. Hän ymmärtää promptien logiikan ja osaa soveltaa AI-ratkaisuja.",
         next: [
-          { text: "Onko hänellä käytännön esimerkkiä agentista?", value: 6 }
+          { text: "Onko hänellä käytännön esimerkkiä agentista?", value: "6" }
         ]
       },
       5: {
         reply: "Kyllä. Hän on johtanut monia dataintensiivisiä hankkeita, kuten Guidewire-ydinjärjestelmän BI-integraatiota ja tutkintadatahankkeita.",
         next: [
-          { text: "Onko hänellä käytännön esimerkkiä agentista?", value: 6 }
+          { text: "Onko hänellä käytännön esimerkkiä agentista?", value: "6" }
         ]
       },
       6: {
-        reply: "Esimerkiksi: asiantuntija tarvitsee automaattisen yhteenvedon projektista Power BI -raporttiin. Juho-Matias rakentaa agentin, joka tiivistää datan, ehdottaa toimenpiteitä ja luo version esitettäväksi johdolle.",
+        reply: "Minulla on pari esimerkkiä Juho-Matiaksen ideoimista AI-agenteista – haluatko kuulla?",
         next: [
-          { text: "Onko hänestä lisämateriaalia?", value: 7 }
+          { text: "Näytä Power BI -agentti", value: "6a" },
+          { text: "Näytä Referenssipankki-agentti", value: "6b" }
         ]
       },
-7: {
-  reply: 'Kyllä, tässä hänen LinkedIn-profiilinsa: <a href="https://www.linkedin.com/in/juho-matias-roitto" target="_blank">linkedin.com/in/juho-matias-roitto</a><br>CV löytyy Sofigaten CV-pankista: <a href="https://apps.powerapps.com/play/e/55b7976d-b67c-ec37-a011-2386275fb753/a/2fb39741-ff07-4456-ad94-e806f734ceaa?tenantId=babc8466-9166-41e3-ba43-3b3ac103b2d5&hint=ff8c9933-57c4-454c-9947-d7ca9f059fa5&sourcetime=1738567838876" target="_blank">Avaa CV tästä</a>',
-  next: [
-    { text: "Mihin rooliin haluaisit hänet?", value: 8 }
-  ]
-},
-      8: {
-        reply: "Valitse rooli, johon haluat kutsua Juho-Matiaksen:",
+      "6a": {
+        reply: "Power BI -agentti: asiantuntija tarvitsee automaattisen yhteenvedon projektista Power BI -raporttiin. Juho-Matias rakentaa agentin, joka tiivistää datan, ehdottaa toimenpiteitä ja luo version esitettäväksi johdolle.",
+        next: []
+      },
+      "6b": {
+        reply: "Referenssipankki-agentti: rakennetaan asiakasreferenssipankki, joka ei sisällä pelkkiä myyntitekstejä vaan myös aidot lopputuotokset – projektiraportit, selvitykset ja dokumentoidut ratkaisut.",
+        next: []
+      },
+      7: {
+        reply: 'Kyllä, tässä hänen LinkedIn-profiilinsa: <a href="https://www.linkedin.com/in/juho-matias-roitto" target="_blank">linkedin.com/in/juho-matias-roitto</a><br>CV löytyy Sofigaten CV-pankista: <a href="https://apps.powerapps.com/play/e/55b7976d-b67c-ec37-a011-2386275fb753/a/2fb39741-ff07-4456-ad94-e806f734ceaa" target="_blank">Avaa CV tästä</a>',
         next: [
-          { text: "AI Technology Champion", value: "mailto:juhomatias.roitto@gmail.com?subject=Haastattelukutsu – AI Technology Champion&body=Hei Juho-Matias,%0AHaluaisimme keskustella kanssasi AI Technology Champion -roolista. Voisitko ehdottaa sinulle sopivaa aikaa haastattelulle?%0A%0AYstävällisin terveisin,%0A[Rekrytoijan nimi]", link: true },
-          { text: "Practice Champion", value: "mailto:juhomatias.roitto@gmail.com?subject=Haastattelukutsu – Practice Champion&body=Hei Juho-Matias,%0AOlemme kiinnostuneita keskustelemaan kanssasi Practice Champion -roolista. Voisitko ehdottaa sinulle sopivaa aikaa haastattelulle?%0A%0AYstävällisin terveisin,%0A[Rekrytoijan nimi]", link: true }
+          { text: "AI Technology Champion", value: "teams-ai" },
+          { text: "Practice Champion", value: "teams-practice" }
         ]
-      }
+      },
+      "teams-ai": {
+        reply: "<b>Tässä valmis Teams-viesti hänelle:</b><div class='teams-message'>Hei Juho-Matias,\n\nHaluaisimme keskustella kanssasi AI Technology Champion -roolista Sofigaten AI Agent -projektissa.\nVoisitko ehdottaa sinulle sopivaa aikaa lyhyelle keskustelulle?\n\nYstävällisin terveisin,\n[Rekrytoijan nimi]</div>",
+        next: [
+          { text: "Käytettiinkö tässä tekoälyä?", value: "9" }
+        ]
+      },
+      "teams-practice": {
+        reply: "<b>Tässä valmis Teams-viesti hänelle:</b><div class='teams-message'>Hei Juho-Matias,\n\nOlemme kiinnostuneita keskustelemaan kanssasi Practice Champion -roolista Sofigaten AI Agent -projektissa.\nVoisitko ehdottaa sinulle sopivaa aikaa lyhyelle keskustelulle?\n\nYstävällisin terveisin,\n[Rekrytoijan nimi]</div>",
+        next: [
+          { text: "Käytettiinkö tässä tekoälyä?", value: "9" }
+        ]
+      },
+      9: {
+        reply: "Ja vielä yksi kysymys ennen kuin suljet tämän sivun: mitä luulet – käytettiinkö tämän hakemuksen rakentamiseen tekoälyä?",
+        next: [
+          { text: "Ehdottomasti!", value: "ai-yes" },
+          { text: "Ei kai sentään…", value: "ai-no" },
+          { text: "Jos käytettiin, niin fiksusti.", value: "ai-smart" }
+        ]
+      },
+      "ai-yes": { reply: "Totta kai käytettiin. Tekoäly ei ole uhka, vaan kollega – kunhan osaat brieffata sen oikein.", next: [] },
+      "ai-no": { reply: "Tämä tuntuu siltä, mutta oikeasti tämä on ollut tiimityötä – minä ja Juho-Matias yhdessä.", next: [] },
+      "ai-smart": { reply: "Juuri näin. AI ei korvaa sinua – mutta se voi monistaa parhaan version sinusta.", next: [] }
     };
 
-    function showResponse(id, userText) {
-      // Rekrytoijan valinta näkyviin
+    function next(id, userText) {
       const userBubble = document.createElement("div");
       userBubble.className = "chat-bubble recruiter";
       userBubble.textContent = userText;
       chat.insertBefore(userBubble, options);
 
-      // Agentin vastaus
       const res = responses[id];
       const agentBubble = document.createElement("div");
       agentBubble.className = "chat-bubble agent";
       agentBubble.innerHTML = res.reply;
       chat.insertBefore(agentBubble, options);
 
-      // Uudet valinnat
+      if (id === "6a") seen6a = true;
+      if (id === "6b") seen6b = true;
+
       options.innerHTML = "";
+      if (id === "6a" || id === "6b") {
+        if (seen6a && seen6b) {
+          const btn = document.createElement("button");
+          btn.className = "option-button";
+          btn.textContent = "Onko hänestä lisämateriaalia?";
+          btn.onclick = () => next("7", "Onko hänestä lisämateriaalia?");
+          options.appendChild(btn);
+        }
+        return;
+      }
+
       res.next.forEach(opt => {
         const btn = document.createElement("button");
         btn.className = "option-button";
         btn.textContent = opt.text;
-        if (opt.link) {
-          btn.onclick = () => window.location.href = opt.value;
-        } else {
-          btn.onclick = () => showResponse(opt.value, opt.text);
-        }
+        btn.onclick = () => next(opt.value, opt.text);
         options.appendChild(btn);
       });
     }
