@@ -1,196 +1,203 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8">
-  <title>Juho-Matias Roitto – AI Chat -hakemus</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 20px;
-    }
-    .chat-container {
-      max-width: 720px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .chat-bubble {
-      padding: 12px 18px;
-      margin: 8px 0;
-      border-radius: 15px;
-      max-width: 80%;
-      line-height: 1.4;
-    }
-    .agent {
-      background: #e9ecef;
-      align-self: flex-start;
-    }
-    .recruiter {
-      background: #d1e7dd;
-      align-self: flex-end;
-      text-align: right;
-    }
-    .options {
-      margin: 12px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .option-button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 8px;
-      background-color: #0d6efd;
-      color: white;
-      font-size: 1em;
-      cursor: pointer;
-      text-align: left;
-    }
-    .option-button:hover {
-      background-color: #0b5ed7;
-    }
-    a {
-      color: #0d6efd;
-    }
-    .restart-button {
-      background-color: #6c757d;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juho-Matias Roitto – Interaktiivinen AI-hakemus</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f0f4f8; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; background-color: #0078d4; color: white; }
+        button:hover { background-color: #005a9e; }
+        .message-box { background-color: white; border-radius: 15px; padding: 15px; margin: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: relative; }
+        .message-box:after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-bottom-color: white;
+        }
+        .hidden { display: none; }
+        h1 { color: #333; }
+    </style>
 </head>
 <body>
-  <div class="chat-container" id="chat">
-    <div class="chat-bubble recruiter">Kuka tämä Juho-Matias Roitto oikein on – ja miksi hänen nimensä pyörii AI-roolien yhteydessä?</div>
-    <div class="options" id="options"></div>
-  </div>
 
-  <script>
-    const chat = document.getElementById("chat");
-    const options = document.getElementById("options");
+<h1>🎬 Juho-Matias Roitto – AI-hakemus</h1>
 
-    const steps = [
-      {
-        question: "Valitse mitä haluat tietää hänestä ensin:",
-        choices: [
-          { text: "Näytä hänen supervoimansa", response: "Juho-Matiaksen supervoima on nähdä datan, teknologian ja liiketoiminnan väliin. Hän ei vain rakenna – hän ymmärtää, mitä varten rakennetaan." },
-          { text: "Avaa hänen AI-portfolio", response: "Juho-Matias on siirtymässä Gen AI -asiantuntijaksi, ja hänellä on jo useita proof-of-concepteja mm. Copilotilla ja OpenAI:lla. Hän tietää, miten agentti konfiguroidaan – ja miksi sillä on merkitystä." },
-          { text: "Miksi hän on oikeasti erilainen?", response: "Koska hän yhdistää arkkitehdin ajattelun, fasilitaattorin herkkyyden ja kehittäjän nälän. Harva pystyy samaan – mutta hän pystyy." }
-        ],
-        nextStep: 1
-      },
-      {
-        question: null,
-        response: "Juho-Matiaksella on agentti-ideoita, jotka eivät jää pilvilinnoiksi. Tässä kolme, jotka voisivat pyöriä Sofigatella jo ensi viikolla:",
-        followUps: [
-          "🧠 Referenssipankki-agentti: Ei enää työlästä referenssien etsintää. Agentti hyödyntää paitsi valmiita referenssikuvauksia, myös itse lopputuotokset – projektiraportit, selvitykset, arkkitehtuurit. Organisaation kollektiivinen muisti aktivoituu yhdellä promptilla.",
-          "👥 Crew-agentti: Myyjä syöttää agentille keskustelun asiakkaan kanssa – vapaamuotoisena tekstinä. Agentti poimii siitä tarvittavat taidot, tuntihinnat ja aikataulut ja vie ne suoraan oikeisiin kenttiin.",
-          "🔄 Power BI -agentti: Agentti lukee taustalla raportin tiedot, tiivistää sen yhteenvedoksi ja ehdottaa toimenpiteitä. Lopuksi se tuottaa tiivistelmän, joka voidaan lähettää johdon katsaukseen."
-        ],
-        nextStep: 2
-      },
-      {
-        question: "Juho-Matias hakee kahta roolia – kumpi kiinnostaa?",
-        choices: [
-          { text: "AI Technology Champion", response: "<b>AI Technology Champion:</b> Teknologisten agenttien rakentaja ja konfiguroija. Hallitsee Copilotin, OpenAI:n ja Power Platformin – ja tietää, miten ne saadaan käyttöön oikeasti." },
-          { text: "Practice Champion", response: "<b>Practice Champion:</b> Tuottaa käyttötapaukset, fasilitoi kokeilut ja validoi agentit elävässä ympäristössä. Ei pelkää tyhjää taulua – vaan piirtää siihen ensimmäisen viivan." }
-        ],
-        nextStep: 3
-      },
-      {
-        question: "Tässä valmis Teams-viesti Juho-Matiakselle:",
-        choices: [
-          {
-            text: "Kopioi viesti",
-            response: "<pre>Hei Juho-Matias,\n\nHaluaisimme keskustella kanssasi roolistasi Sofigaten AI Agent -projektissa.\nVoisitko ehdottaa sinulle sopivaa aikaa lyhyelle keskustelulle?\n\nYstävällisin terveisin,\n[Rekrytoijan nimi]</pre>"
-          }
-        ],
-        nextStep: 4
-      },
-      {
-        question: "Ja vielä yksi kysymys ennen kuin lähdet...",
-        choices: [
-          { text: "Ehdottomasti!", response: "Totta kai käytettiin. Tekoäly ei ole uhka – vaan kollega, kunhan sen osaa brieffata oikein." },
-          { text: "Ei kai sentään...", response: "Tämä tuntuu inhimilliseltä – mutta kyllä, tämän takana oli Juho-Matias ja AI yhdessä." },
-          { text: "Jos käytettiin, niin fiksusti", response: "Juuri näin. AI ei korvaa sinua – mutta se voi monistaa parhaan version sinusta." }
-        ],
-        nextStep: null
-      }
-    ];
+<div id="content">
+    <div class="message-box">
+        <p><strong>Kuka tämä Juho-Matias Roitto oikein on – ja miksi hänen nimensä pyörii AI-roolien yhteydessä?</strong></p>
+        <button onclick="showIntro('supervoimat')">Näytä hänen supervoimansa</button>
+        <button onclick="showIntro('portfolio')">Avaa hänen AI-portfolio</button>
+        <button onclick="showIntro('erilainen')">Miksi hän on oikeasti erilainen?</button>
+    </div>
 
-    let currentStep = 0;
+    <div id="introResponses" class="message-box hidden"></div>
+    <div id="agenttiEsimerkit" class="message-box hidden">
+        <div class="block">
+          <h2>🚀 Agenttien maailma</h2>
+          <h3>📄 Agenttien synty – yleiskuvaus</h3>
+          <p>Kaikki alkoi kysymyksestä: <em>Mitä jos tekoäly ei olisikaan iso järjestelmämuutos, vaan pieni työkaveri?</em></p>
+          <p>Juho-Matias alkoi rakentaa AI-agentteja – pieniä, tarkkaan rajattuja tekoälyavustajia, jotka ratkovat yksittäisiä liiketoimintaongelmia. Ei hypeä, ei monoliitteja – vaan ketteriä konsepteja, jotka tuovat tekoälyn lähemmäs arkea.</p>
+          <ul>
+            <li>Ratkaisevat oikeita ongelmia</li>
+            <li>Briiffattu tarkasti</li>
+            <li>Testattu käytännössä, yhdessä käyttäjien kanssa</li>
+          </ul>
+        </div>
+        <button onclick="showAgent('referenssi')">Referenssipankki-agentti</button>
+        <button onclick="showAgent('crew')">Crew-agentti</button>
+        <button onclick="showAgent('powerbi')">Power BI -agentti</button>
+    </div>
 
-    function showStep() {
-      options.innerHTML = "";
-      const step = steps[currentStep];
+    <div id="agentResponses" class="message-box hidden"></div>
 
-      if (step.question) {
-        const q = document.createElement("div");
-        q.className = "chat-bubble recruiter";
-        q.textContent = step.question;
-        chat.appendChild(q);
-      }
+    <div id="rooliValinta" class="message-box hidden">
+        <p><strong>Juho-Matias hakee kahta roolia – kumpi kiinnostaa enemmän?</strong></p>
+        <button onclick="showRooli('technology')">AI Technology Champion</button>
+        <button onclick="showRooli('practice')">Practice Champion</button>
+    </div>
 
-      if (step.response) {
-        const agent = document.createElement("div");
-        agent.className = "chat-bubble agent";
-        agent.innerHTML = step.response;
-        chat.appendChild(agent);
-      }
+    <div id="rooliResponses" class="message-box hidden"></div>
 
-      if (step.followUps) {
-        step.followUps.forEach(text => {
-          const agent = document.createElement("div");
-          agent.className = "chat-bubble agent";
-          agent.textContent = text;
-          chat.appendChild(agent);
-        });
-      }
+    <div id="teamsViesti" class="message-box hidden">
+        <p><strong>Jos olet kiinnostunut, tässä valmis viesti Juho-Matiakselle:</strong></p>
+        <div class="message-box">
+            Hei Juho-Matias,<br><br>
+            Haluaisimme keskustella kanssasi roolistasi Sofigaten AI Agent -projektissa.<br>
+            Voisitko ehdottaa sinulle sopivaa aikaa lyhyelle keskustelulle?<br><br>
+            Ystävällisin terveisin,<br>
+            [Rekrytoijan nimi]
+        </div>
+        <a href="CV_2025_Juho_Matias_Roitto_LahiTapiola.pdf" target="_blank"><button>Lataa Juho-Matiaksen CV</button></a>
+    </div>
 
-      if (step.choices) {
-        step.choices.forEach(choice => {
-          const btn = document.createElement("button");
-          btn.className = "option-button";
-          btn.textContent = choice.text;
-          btn.onclick = () => handleChoice(choice.text, choice.response);
-          options.appendChild(btn);
-        });
-      }
-    }
+    <div id="tekoalyKysymys" class="message-box hidden">
+        <p><strong>☕ Varoitus rekrytoijalle</strong></p>
+        <p>Jos palkkaat Juho-Matiaksen, AI-agentit alkavat vierailla kahvihuoneessa ja kysyä: <br>“Kuulin että sulla oli ongelma. Haluatko että teen siitä ehdotuksen?”</p>
+                <p><strong>Käytettiinkö tämän hakemuksen tekemiseen tekoälyä?</strong> <br> Ps. Juho-Matias ei ollut tehnyt nettisivuja ennen... </p>
+                <button onclick="showTekoaly('kylla')">Ehdottomasti!</button>
+                <button onclick="showTekoaly('ei')">Ei kai sentään...</button>
+                <button onclick="showTekoaly('fiksusti')">Jos käytettiin, niin fiksusti</button>
+            </div>
 
-    function handleChoice(userText, responseText) {
-      const user = document.createElement("div");
-      user.className = "chat-bubble recruiter";
-      user.textContent = userText;
-      chat.insertBefore(user, options);
+    </div>
 
-      const agent = document.createElement("div");
-      agent.className = "chat-bubble agent";
-      agent.innerHTML = responseText;
-      chat.insertBefore(agent, options);
+    <div id="tekoalyResponses" class="message-box hidden"></div>
 
-      currentStep++;
-      if (currentStep < steps.length) {
-        setTimeout(showStep, 500);
-      } else {
-        showRestart();
-      }
-    }
+    <div id="restart" class="hidden">
+        <button onclick="location.reload()">🔁 Aloita alusta</button>
+    </div>
+</div>
 
-    function showRestart() {
-      options.innerHTML = "";
-      const btn = document.createElement("button");
-      btn.className = "option-button restart-button";
-      btn.textContent = "Aloita alusta";
-      btn.onclick = () => window.location.reload();
-      options.appendChild(btn);
-    }
+<script>
+function showIntro(type) {
+    const messages = {
+        supervoimat: `<section>
+            <div class="block">
+              <h2>📅 Supervoimat</h2>
+              <p>Juho-Matiaksen supervoima on nähdä näkymätöntä: hän havaitsee datan, teknologian ja liiketoiminnan väliset mahdollisuudet ennen kuin muut osaavat niitä edes kysyä.</p>
+              <p>Projektissa kuin projektissa hän on se henkilö, joka pysähtyy juuri ennen kuin väärä ratkaisu menee tuotantoon – ja kysyy sen kysymyksen, jota kukaan muu ei tullut ajatelleeksi.</p>
+              <p>Hän ei vain rakenna järjestelmiä. Hän rakentaa siltateitä teknologian ja liiketoiminnan välille – oikeita asioita oikeista syistä. Hän ei tarvitse kristallipalloa, koska hän kuuntelee dataa, liiketoimintaa ja käyttäjiä tarkemmin kuin useimmat koskaan ehtivät.</p>
+            </div>
+          </section>`,
+        portfolio: `<section>
+            <div class="block">
+              <h2>🧪 Portfolio</h2>
+              <p>Juho-Matias uskoo tekemällä oppimiseen – ei odotteluun.</p>
+              <p>Hän on rakentanut ja testannut käytännössä AI-ratkaisuja, jotka eivät ole vain ideatasolla, vaan konkreettisia kokeiluja oikeiden liiketoimintatarpeiden ympärillä.</p>
+              <p>Nämä kokeilut eivät vielä pyöri tuotannossa – mutta ne ovat olleet ensimmäisiä askeleita kohti AI-avusteista arkea. Jokainen prototyyppi, demo ja keskustelu on vienyt eteenpäin kohti ymmärrystä siitä, miten tekoäly voi aidosti tukea liiketoimintaa.</p>
+            </div>
+          </section>`,
+        erilainen: `<section>
+            <div class="block">
+              <h2>🚀 Miksi erilainen?</h2>
+              <p>On paljon teknisiä asiantuntijoita. On myös fasilitaattoreita. Johtajiakin löytyy. Mutta harva yhdistää nämä kolme roolia yhtä luontevasti kuin Juho-Matias.</p>
+              <p>Hän osaa lukea SQL:ää kuin runoutta, mutta johtaa SteCo-kokouksia kuin strategisti. Hän ei eksy pilveen – hän piirtää siitä kartan muille.</p>
+              <p>Tiimit luottavat häneen, koska hän saa asiat tapahtumaan. Sidosryhmät kuuntelevat, koska hän osaa sanoittaa kompleksin selkokielellä.</p>
+              <p>Juho-Matias ei vain vie asioita maaliin – hän määrittelee mitä “maali” oikeasti tarkoittaa.</p>
+            </div>
+          </section>`
+    };
+    document.getElementById('introResponses').innerHTML = messages[type];
+    document.getElementById('introResponses').classList.remove('hidden');
+    document.getElementById('agenttiEsimerkit').classList.remove('hidden');
+}
 
-    showStep();
-  </script>
+function showAgent(type) {
+    const messages = {
+       referenssi: `<section>
+            <div class="block">
+              <h2>🧠 Referenssipankki-agentti – Tiedon etsijä</h2>
+              <p><strong>Ongelma:</strong><br>Organisaatiossa oli valtavasti hyvää tietoa – mutta sitä ei löytynyt silloin kun sitä tarvittiin. Raportit, projektimuistiot ja datamallit olivat tallessa, mutta eivät kenenkään mielessä. Ihmiset aloittivat alusta, koska eivät tienneet, että sama ongelma oli jo ratkaistu muualla.</p>
+              <p><strong>Ratkaisu:</strong><br>Juho-Matias rakensi agenttiprototyypin, jonka tehtävä oli muistaa, yhdistää ja ehdottaa. Kun käyttäjä kuvaili ongelman tai tarpeen, agentti käytti semanttista hakua ja asiayhteyksiä löytääkseen oikeita dokumentteja ja kontakteja – ei pelkästään hakusanoja vastaavia tiedostoja.</p>
+              <p><strong>Käytännön testaus:</strong><br>Agentti ajettiin sisäisten referenssien pilottihakuun. Vaikka data oli osin hajanaista, konsepti toimi: käyttäjät saivat konkreettisia ehdotuksia aiemmista projekteista, joita eivät olisi itse löytäneet.</p>
+              <p>Agentti ei ollut täydellinen hakukone – eikä sen pitänyt olla. Sen tehtävä oli tuoda muisti kollektiiviseksi. Ja se toimi.</p>
+            </div>
+          </section>`,
+        crew: `<section>
+            <div class="block">
+              <h2>🤝 Crew-agentti – Yhteistyön orkestroija</h2>
+               <p><strong>Ongelma:</strong><br>Myynti ja tuotanto puhuivat samaa kieltä – mutta eri aikamuodoissa. Tiedon kulku ei ollut katkonaista vaan näkymätöntä: asiat kyllä sanottiin, mutta eivät tallentuneet, eivät pysyneet saatavilla eikä niitä yhdistetty kokonaisuudeksi. Lopputuloksena: väärinymmärryksiä, tuplatyötä ja reaktiivista toimintaa.</p>
+               <p><strong>Ratkaisu:</strong><br>Juho-Matias rakensi agenttimallin, joka toimi ikään kuin “hiljaisena koordinaattorina”. Se otti vastaan tietoa eri lähteistä (esim. myynnin suunnitelmista ja tuotannon kapasiteetista), muodosti niistä yhteisnäkymän ja ehdotti toimenpiteitä.</p>
+               <p><strong>Kokeiluvaiheen opit:</strong><br>Jo pelkkä agentin rakentaminen pakotti tunnistamaan, missä tieto syntyy ja missä se katoaa. Pilotissa agentti tunnisti esimerkiksi ristiriidan toimitusaikojen ja tuotannon kapasiteetin välillä ennen kuin ihminen olisi sitä huomannut.</p>
+               <p>Käyttäjät kokivat agentin enemmän kollegana kuin järjestelmänä – se “muistutti oikeista asioista oikeaan aikaan”.</p>
+            </div>
+          </section>`,
+        powerbi: `<section>
+            <div class="block">
+              <h2>📊 Power BI -agentti – Johdon neuvonantaja</h2>
+                        <p><strong>Ongelma:</strong><br>Johto sai raportit ajallaan, mutta vaikutus jäi usein pintaan. Data nähtiin, mutta ei ehditty tulkita. Kokoukset kuluivat tulkinnan sijaan selittämiseen.</p>
+              <p>Datan ja päätöksenteon väliin jäi hiljainen kuilu.</p>
+              <p><strong>Ratkaisu:</strong><br>Juho-Matias rakensi kokeilun, jossa Power BI:n taustadata yhdistettiin kielimalliin. Agentti osasi vastata kysymyksiin, tuoda esiin poikkeamia ja jopa ehdottaa mahdollisia syitä – suoraan käyttöliittymästä.</p>
+              <p>Esimerkiksi: “Miksi asiakastyytyväisyys laski Q3?” → agentti toi esiin asiakaspalautteiden muutokset ja käsittelyaikojen kasvun yhdellä pyynnöllä.</p>
+              <p><strong>Tulokset ja oivallukset:</strong><br>Agentti ei antanut varmoja vastauksia – mutta se aloitti keskustelun. Se nopeutti analyysiä, ehdotti tulkintoja ja vapautti johdon fokuksen päätöksentekoon.</p>
+              <p>Tämä oli askel kohti “thinking with data” –kulttuuria, jossa data ei vain näy – se puhuu takaisin.</p>
+            </div>
+          </section>`   
+    };
+    document.getElementById('agentResponses').innerHTML = messages[type];
+    document.getElementById('agentResponses').classList.remove('hidden');
+    document.getElementById('rooliValinta').classList.remove('hidden');
+}
+
+function showRooli(type) {
+    const messages = {
+       technology: `<section>
+            <div class="block">
+              <h2>🧩 AI Technology Champion</h2>
+               <p><strong>Rooli:</strong><br>Myynti ja tuotanto puhuivat samaa kieltä – mutta eri aikamuodoissa. Tiedon kulku ei ollut katkonaista vaan näkymätöntä: asiat kyllä sanottiin, mutta eivät tallentuneet, eivät pysyneet saatavilla eikä niitä yhdistetty kokonaisuudeksi. Lopputuloksena: väärinymmärryksiä, tuplatyötä ja reaktiivista toimintaa.</p>
+               <p><strong>Miksi minä:</strong><br>Miksi minä: Tunnen työkalut, olen tehnyt AI-kokeiluja käytännössä, ja osaan jalkauttaa teknologian liiketoiminnan kielelle.</p>
+            </div>
+          </section>`,
+        practice: `<section>
+            <div class="block">
+              <h2>🧭 Practice Champion</h2>
+               <p><strong>Rooli:</strong><br>Fasilitoi AI-ratkaisujen käyttöä liiketoiminnassa.</p>
+               <p><strong>Miksi minä:</strong><br>Olen fasilitoinut kehitystyötä vuosia, osaan kuunnella, kiteyttää ja rakentaa käyttäjän kanssa yhdessä. AI ei ole minulle projekti – se on yhteistyöprosessi.</p>
+            </div>
+          </section>`,
+    };
+    document.getElementById('rooliResponses').innerHTML = messages[type];
+    document.getElementById('rooliResponses').classList.remove('hidden');
+    document.getElementById('teamsViesti').classList.remove('hidden');
+    document.getElementById('tekoalyKysymys').classList.remove('hidden');
+}
+
+function showTekoaly(type) {
+    const messages = {
+        kylla: "Totta kai käytettiin. Tekoäly ei ole uhka – vaan kollega, kunhan sen osaa brieffata oikein.",
+        ei: "Tämä tuntuu inhimilliseltä – mutta kyllä, tämän takana oli Juho-Matias ja AI yhdessä.",
+        fiksusti: "Juuri näin. AI ei korvaa sinua – mutta se voi monistaa parhaan version sinusta."
+    };
+    document.getElementById('tekoalyResponses').innerText = messages[type];
+    document.getElementById('tekoalyResponses').classList.remove('hidden');
+    document.getElementById('restart').classList.remove('hidden');
+}
+</script>
+
 </body>
 </html>
